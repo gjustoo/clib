@@ -24,9 +24,9 @@ type resultModel struct {
 }
 
 type Answer struct {
-	title       string
-	description string
-	url         string
+	Title       string
+	Description string
+	Url         string
 }
 
 func NewResultModel() *resultModel {
@@ -36,13 +36,13 @@ func NewResultModel() *resultModel {
 		Foreground(lipgloss.Color("#FAFAFA"))
 
 	answers := []Answer{
-		Answer{title: "Como hacer las mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las segundas mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las segundas mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las terceras mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las terceras mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las cuartas  mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las cuartas mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las quintas mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las quintas mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las sextas mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las sextas mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{title: "Como hacer las septimas mejores patatas fritas del mundo ", description: "Pues nada eso, que como hacer las septimas mejores patatas fritas del mundo mundial", url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las segundas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las segundas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las terceras mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las terceras mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las cuartas  mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las cuartas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las quintas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las quintas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las sextas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las sextas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+		Answer{Title: "Como hacer las septimas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las septimas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
 	}
 
 	s := &resultModel{query: "Patatas fritas", index: 0, style: &style, answers: answers}
@@ -94,7 +94,7 @@ func (a Answer) string() string {
 
 	var out bytes.Buffer
 
-	result := fmt.Sprintf("%s \n %s \n %s \n", a.title, a.description, a.url)
+	result := fmt.Sprintf("%s \n %s \n %s \n", a.Title, a.Description, a.Url)
 
 	out.WriteString(result)
 
