@@ -40,7 +40,7 @@ func NewResultModel(query string, answers []Answer) *resultModel {
 
 	}
 
-	s := &resultModel{query: query + " : \n", cursor: 0, answers: answers, list: list.New(items, list.NewDefaultDelegate(), 50, 100)}
+	s := &resultModel{query: query + " : \n", cursor: 0, answers: answers, list: list.New(items, list.NewDefaultDelegate(), 100, 20)}
 	s.list.Title = "Results of : " + query
 	return s
 }
