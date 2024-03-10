@@ -1,12 +1,16 @@
 package model
 
 import (
-	"log"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	browse "github.com/gjustoo/clib/cmd/browse"
 )
 
 type searchModel struct {
@@ -14,28 +18,15 @@ type searchModel struct {
 	header      string
 	fieldStyle  *lipgloss.Style
 	headerStyle *lipgloss.Style
-	// modelStyle  *lipgloss.Style
 	answerField textinput.Model
 }
 
 func (s searchModel) Render() string {
-
 	prompt := s.fieldStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left, s.prompt, s.answerField.View()))
-
 	return s.headerStyle.Render(lipgloss.JoinVertical(lipgloss.Left, s.header, prompt))
-
 }
 
 func NewSearchModel() *searchModel {
-
-	// header := `				 _____                    _
-	// 		    / ____|                  | |
-	// 			| |  __  ___   ___   __ _| | ___
-	// 			| | |_ |/ _ \ / _ \ / _  | |/ _ \
-	// 			| |__| | (_) | (_) | (_| | |  __/
-	// 		     \_____|\___/ \___/ \__, |_|\___|
-	// 								__/  |
-	// 								|___/        `
 
 	header := `	██████╗ ██████╗  █████╗ ██╗   ██╗███████╗    ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
 	██╔══██╗██╔══██╗██╔══██╗██║   ██║██╔════╝    ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
@@ -59,28 +50,23 @@ func NewSearchModel() *searchModel {
 
 }
 
-func (m searchModel) Init() tea.Cmd {
-	return nil
-}
+func (m searchModel) Init() tea.Cmd { return nil }
 
 func (m searchModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	var cmd tea.Cmd
 
-	log.Print("Triggered UPDATE from searchModel")
-
 	switch msg := msg.(type) {
-	case browse.HelloMsg:
-		log.Print(" Entered helloMsg from searchModel")
+
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
-			log.Print("Entered ctrlc from searchModel")
 			return m, tea.Quit
 		case "enter":
-			log.Print("entered enter keystroke from searchModel")
-			return NewResultModel(), nil
+			r := GetResults(m.answerField.Value())
+			return NewResultModel(m.answerField.Value(), r), nil
 		}
+
 	}
 
 	m.answerField, cmd = m.answerField.Update(msg)
@@ -88,10 +74,80 @@ func (m searchModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m searchModel) View() string {
-	// if m.width == 0 {
-	// 	return "loading...."
-	// }
+func (m searchModel) View() string { return lipgloss.JoinVertical(lipgloss.Left, m.Render()) }
 
-	return lipgloss.JoinVertical(lipgloss.Left, m.Render())
+func GetResults(query string) []Answer {
+
+	query = url.QueryEscape(query)
+
+	url := fmt.Sprintf("https://api.search.brave.com/res/v1/web/search?q=%s&count=20&result_filter=web", query)
+	method := "GET"
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("X-Subscription-Token", "")
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	m := map[string]interface{}{}
+
+	err = json.Unmarshal(body, &m)
+
+	if err != nil {
+		panic(err)
+	}
+
+	r := parseMap(m)
+	return r
+
+}
+
+func parseMap(aMap map[string]interface{}) []Answer {
+
+	webMap, exists := aMap["web"]
+
+	r := []Answer{}
+	if exists {
+		return parseMap(webMap.(map[string]interface{}))
+	}
+
+	webMap, exists = aMap["results"]
+
+	if exists {
+
+		for _, val := range webMap.([]interface{}) {
+			r = append(r, parseResult(val.(map[string]interface{})))
+		}
+	}
+	return r
+}
+
+func parseResult(rm map[string]interface{}) Answer {
+	return Answer{title: rm["title"].(string), desc: cleanDesc(rm["description"].(string)), Url: rm["url"].(string)}
+}
+
+func cleanDesc(desc string) (a string) {
+
+	a = strings.ReplaceAll(desc, "<strong>", "")
+	a = strings.ReplaceAll(a, "</strong>", "")
+
+	return
+
 }

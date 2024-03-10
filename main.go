@@ -3,11 +3,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/gjustoo/clib/api"
+import "github.com/gjustoo/clib/cmd"
 
 func main() {
-
-	api.GetResults("a")
-
-	// cmd.Execute()
+	cmd.Execute()
 }

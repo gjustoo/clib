@@ -1,51 +1,47 @@
 package model
 
 import (
-	"bytes"
-	"fmt"
-	"log"
+	"os"
+	"os/exec"
+	"runtime"
+	"time"
 
+	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	browse "github.com/gjustoo/clib/cmd/browse"
+	"golang.org/x/term"
 )
 
-// import (
-// 	"github.com/charmbracelet/bubbles/textinput"
-// 	tea "github.com/charmbracelet/bubbletea"
-// 	"github.com/charmbracelet/lipgloss"
-// )
+var docStyle = lipgloss.NewStyle().Margin(1, 2)
 
 type resultModel struct {
 	answers []Answer
-	index   int
+	cursor  int
 	query   string
-	style   *lipgloss.Style
+	list    list.Model
 }
 
 type Answer struct {
-	Title       string
-	Description string
-	Url         string
+	title string
+	desc  string
+	Url   string
 }
 
-func NewResultModel() *resultModel {
+func (i Answer) Title() string       { return i.title }
+func (i Answer) Description() string { return i.desc }
+func (i Answer) FilterValue() string { return i.desc }
 
-	style := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#FAFAFA"))
+func NewResultModel(query string, answers []Answer) *resultModel {
 
-	answers := []Answer{
-		Answer{Title: "Como hacer las mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las segundas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las segundas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las terceras mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las terceras mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las cuartas  mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las cuartas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las quintas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las quintas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las sextas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las sextas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
-		Answer{Title: "Como hacer las septimas mejores patatas fritas del mundo ", Description: "Pues nada eso, que como hacer las septimas mejores patatas fritas del mundo mundial", Url: "https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiypdHG19iEAxWMV6QEHYDSDy4QFnoECBYQAQ&url=https%3A%2F%2Fwww.directoalpaladar.com%2Frecetario%2Fcomo-hacer-las-mejores-patatas-fritas-del-mundo-mundial&usg=AOvVaw3pI7jNA0O6YKlOpE8xHF7i&opi=89978449"},
+	items := []list.Item{}
+	for _, a := range answers {
+
+		items = append(items, a)
+
 	}
 
-	s := &resultModel{query: "Patatas fritas", index: 0, style: &style, answers: answers}
+	s := &resultModel{query: query + " : \n", cursor: 0, answers: answers, list: list.New(items, list.NewDefaultDelegate(), 50, 100)}
+	s.list.Title = "Results of : " + query
 	return s
 }
 
@@ -53,51 +49,59 @@ func (m resultModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m resultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+type tickMsg int
 
-	log.Print("Triggered UPDATE from resultModel")
+func tick() tea.Msg {
+	time.Sleep(time.Second / 4)
+	return tickMsg(1)
+}
+func (m resultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c":
-			log.Print("Entered ctrlc from resultModel")
 			return m, tea.Quit
 		case "esc":
-			log.Print("Entered ctrlc from resultmodel")
-			return NewSearchModel(), browse.WaitASec
-
+			return NewSearchModel(), nil
+		case "enter":
+			open(m.answers[m.cursor].Url)
+			return m, tea.Quit
 		}
+	case tea.WindowSizeMsg:
+		h, v := docStyle.GetFrameSize()
+		m.list.SetSize(msg.Width-h, msg.Height-v)
+	case tickMsg:
+		h, v := docStyle.GetFrameSize()
+		tw, th, _ := term.GetSize(int(os.Stdout.Fd()))
+		m.list.SetSize(th-h, tw-v)
+		return m, tea.Batch(tick, func() tea.Msg { return tea.WindowSizeMsg{Width: h, Height: v} })
 	}
 
-	return m, nil
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m, cmd
 }
 
 func (m resultModel) View() string {
 
-	return m.style.Render(lipgloss.JoinVertical(lipgloss.Left, m.query, " Results : ", answToString(m.answers)))
+	return docStyle.Render(m.list.View())
+
 }
 
-func answToString(a []Answer) string {
+func open(url string) error {
+	var cmd string
+	var args []string
 
-	var out bytes.Buffer
-
-	for _, ans := range a {
-
-		out.WriteString(ans.string())
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		cmd = "xdg-open"
 	}
-
-	return out.String()
-}
-
-func (a Answer) string() string {
-
-	var out bytes.Buffer
-
-	result := fmt.Sprintf("%s \n %s \n %s \n", a.Title, a.Description, a.Url)
-
-	out.WriteString(result)
-
-	return out.String()
-
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
 }
