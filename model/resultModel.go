@@ -29,7 +29,7 @@ type Answer struct {
 
 func (i Answer) Title() string       { return i.title }
 func (i Answer) Description() string { return i.desc }
-func (i Answer) FilterValue() string { return i.desc }
+func (i Answer) FilterValue() string { return i.title }
 
 func NewResultModel(query string, answers []Answer) *resultModel {
 
@@ -64,9 +64,12 @@ func (m resultModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		case "esc":
 			return NewSearchModel(), nil
-		case "enter":
-			open(m.answers[m.cursor].Url)
+		case "ctrl+@":
+			open(m.answers[m.list.Index()].Url)
 			return m, tea.Quit
+		case tea.KeySpace.String():
+			open(m.answers[m.list.Index()].Url)
+			return m, nil
 		}
 	case tea.WindowSizeMsg:
 		h, v := docStyle.GetFrameSize()
